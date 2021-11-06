@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 void main() => runApp(ByteBankApp());
 
-class ByteBankApp extends StatelessWidget{
+class ByteBankApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -13,15 +13,58 @@ class ByteBankApp extends StatelessWidget{
   }
 }
 
-class FormularioTransferencia extends StatelessWidget{
+class FormularioTransferencia extends StatelessWidget {
+  final TextEditingController _textControllerNumConta =
+      TextEditingController();
+  final TextEditingController _textControllerValor = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Nova transferência'),
+      ),
+      body: Column(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child: TextField(
+              controller: _textControllerNumConta,
+              style: TextStyle(fontSize: 24.0),
+              decoration: InputDecoration(
+                  labelText: 'Numero da conta', hintText: '0000'),
+              keyboardType: TextInputType.number,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child: TextField(
+              controller: _textControllerValor,
+              style: TextStyle(fontSize: 24.0),
+              decoration:
+                  InputDecoration(labelText: 'Valor', hintText: '000.00'),
+              keyboardType: TextInputType.number,
+            ),
+          ),
+          ElevatedButton(
+            child: Text('Confirmar'),
+            onPressed: () {
+              debugPrint('clicou no confirmar');
+              final int? numeroConta = int.tryParse(_textControllerNumConta.text);
+              final double? valor = double.tryParse(_textControllerValor.text);
+              if(numeroConta != null && valor != null){
+                final tranferenciaCriada = Tranferencia(valor, numeroConta);
+                debugPrint('$tranferenciaCriada');
+              }
+            },
+          )
+        ],
+      ),
+    );
   }
-
 }
 
-class ListaTransferencias extends StatelessWidget{
+class ListaTransferencias extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,8 +86,9 @@ class ListaTransferencias extends StatelessWidget{
   }
 }
 
-class ItemTranferencia extends StatelessWidget{
+class ItemTranferencia extends StatelessWidget {
   final Tranferencia _tranferencia;
+
   const ItemTranferencia(this._tranferencia);
 
   @override
@@ -57,7 +101,6 @@ class ItemTranferencia extends StatelessWidget{
       ),
     );
   }
-  
 }
 
 class Tranferencia {
@@ -65,4 +108,9 @@ class Tranferencia {
   final int numeroConta;
 
   Tranferencia(this.valor, this.numeroConta);
+
+  @override
+  String toString() {
+    return 'Tranferencia{valor: $valor, numeroConta: $numeroConta}';
+  }
 }
