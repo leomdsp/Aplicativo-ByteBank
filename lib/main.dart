@@ -14,9 +14,9 @@ class ByteBankApp extends StatelessWidget {
 }
 
 class FormularioTransferencia extends StatelessWidget {
-  final TextEditingController _textControllerNumConta =
+  final TextEditingController _controladorNumConta =
       TextEditingController();
-  final TextEditingController _textControllerValor = TextEditingController();
+  final TextEditingController _controladorValor = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -26,43 +26,49 @@ class FormularioTransferencia extends StatelessWidget {
       ),
       body: Column(
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _textControllerNumConta,
-              style: TextStyle(fontSize: 24.0),
-              decoration: InputDecoration(
-                  labelText: 'Numero da conta', hintText: '0000'),
-              keyboardType: TextInputType.number,
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _textControllerValor,
-              style: TextStyle(fontSize: 24.0),
-              decoration:
-                  InputDecoration(labelText: 'Valor', hintText: '000.00'),
-              keyboardType: TextInputType.number,
-            ),
-          ),
+          Editor(controlador:_controladorNumConta, rotulo: 'Número da conta', dica: '0000'),
+          Editor(controlador:_controladorValor, rotulo:'Valor', dica:'00.00', icone: Icons.monetization_on,),
           ElevatedButton(
             child: Text('Confirmar'),
-            onPressed: () {
-              debugPrint('clicou no confirmar');
-              final int? numeroConta = int.tryParse(_textControllerNumConta.text);
-              final double? valor = double.tryParse(_textControllerValor.text);
-              if(numeroConta != null && valor != null){
-                final tranferenciaCriada = Tranferencia(valor, numeroConta);
-                debugPrint('$tranferenciaCriada');
-              }
-            },
+            onPressed: () => _criaTransferencia(),
           )
         ],
       ),
     );
   }
+
+  void _criaTransferencia() {
+    final int? numeroConta = int.tryParse(_controladorNumConta.text);
+    final double? valor = double.tryParse(_controladorValor.text);
+    if(numeroConta != null && valor != null){
+      final tranferenciaCriada = Tranferencia(valor, numeroConta);
+    }
+  }
 }
+
+class Editor extends StatelessWidget {
+  final TextEditingController? controlador;
+  final String? rotulo;
+  final String? dica;
+  final IconData? icone;
+
+  Editor({ this.controlador, this.rotulo, this.dica, this.icone});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(16.0),
+      child: TextField(
+        controller: controlador,
+        style: TextStyle(fontSize: 24.0),
+        decoration:
+        InputDecoration(icon: icone != null ? Icon(icone) : null, labelText: rotulo,  hintText: dica),
+        keyboardType: TextInputType.number,
+      ),
+    );
+  }
+}
+
 
 class ListaTransferencias extends StatelessWidget {
   @override
